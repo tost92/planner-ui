@@ -1,0 +1,19 @@
+@import "../../../global_variables.scss";
+
+.login-section {
+    background-color: $darkBlue;
+
+    .card {
+        border-radius: 1rem;
+    }
+
+    .title {
+        letter-spacing: 1px;
+    }
+
+    .img-container img {
+        min-width: 100%;
+        min-height: 100%;
+        border-radius: 1rem;
+    }
+}
