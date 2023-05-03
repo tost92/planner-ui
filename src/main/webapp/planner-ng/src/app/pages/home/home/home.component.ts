@@ -20,10 +20,10 @@ export class HomeComponent implements OnInit {
   getEventsList() {
     this.authService.getAllEvents().subscribe({
       next: (result) => {
-        console.log(result);        
+        console.log(result);
       },
       error: (error) => {
-        console.log(error);        
+        console.log(error);
       }
     })
   }
