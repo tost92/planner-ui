@@ -24,6 +24,7 @@ export class AuthService {
   authenticate(email: string, password: string) {
     let sub = this.http.post(`${this.serverUrl}${environment.publicServerUri}/authenticate`, {email, password}).pipe(
       map((response: any) => {
+        localStorage.setItem("userEmail",email);
         this.setSession(response);
         return response;
       })
@@ -31,7 +32,7 @@ export class AuthService {
     return sub;
   }
 
-  private setSession(response: any) {  
+  private setSession(response: any) {
     localStorage.setItem('token', response.access_token);
     localStorage.setItem('expires_at', this.getExpiration().format());
     this.expirationCounter();
@@ -46,17 +47,17 @@ export class AuthService {
   expirationCounter() {
     this.tokenSubscription.unsubscribe();
     this.tokenSubscription = of(null).pipe(delay(this.getExpiration().toDate())).subscribe((expired) => {
-      console.log('expired!');  
-      this.logout();    
+      console.log('expired!');
+      this.logout();
     })
   }
 
   isLogged(): boolean {
     const expires_at = moment(localStorage.getItem('expires_at'));
     console.log('adesso ', moment());
-    console.log('expires_at ', expires_at);    
+    console.log('expires_at ', expires_at);
     console.log('adesso è prima della scadenza ', moment().isBefore(expires_at));
-    
+
     return moment().isBefore(expires_at);
   }
 
@@ -68,7 +69,9 @@ export class AuthService {
 
   //da spostare
   getAllEvents() {
-    console.log(`${this.serverUrl}${environment.plannerServerUri}/event/findAll`);    
+    console.log(`${this.serverUrl}${environment.plannerServerUri}/event/findAll`);
     return this.http.get(`${this.serverUrl}/api/planner/event/findAll`);
   }
+
+  loggedUser = (): string | null => (localStorage.getItem("userEmail")) ? localStorage.getItem("userEmail") : "";
 }

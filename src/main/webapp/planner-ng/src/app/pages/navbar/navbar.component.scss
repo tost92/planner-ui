@@ -1,0 +1,13 @@
+@import "../../../global_variables.scss";
+
+.navbar {
+  background-color: $darkBlue;
+  color: $white !important;
+
+  a {
+    color: $white;
+  }
+  li{
+    list-style: none !important;
+  }
+}
