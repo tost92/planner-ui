@@ -4,9 +4,9 @@
   background-color: $darkBlue;
   color: $white !important;
 
-  a {
+  a.nav-link,a.navbar-brand{
     color: $white;
-  }
+    }
   li{
     list-style: none !important;
   }
