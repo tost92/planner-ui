@@ -4,14 +4,14 @@ import { AuthService } from './services/auth/auth.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'planner-ui';
 
-  constructor(private authService:AuthService){}
+  constructor(private authService: AuthService) {}
 
-  isLogged():boolean{
-   return this.authService.isLogged();
+  isLogged(): boolean {
+    return this.authService.isLogged();
   }
 }

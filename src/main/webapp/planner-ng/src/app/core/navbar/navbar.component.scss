@@ -4,10 +4,11 @@
   background-color: $darkBlue;
   color: $white !important;
 
-  a.nav-link,a.navbar-brand{
+  a.nav-link,
+  a.navbar-brand {
     color: $white;
-    }
-  li{
+  }
+  li {
     list-style: none !important;
   }
 }

@@ -5,30 +5,41 @@ import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment.development';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   serverUrl: string = `http://${environment.server}:${environment.port}`;
   tokenSubscription = new Subscription();
 
-  constructor(private http: HttpClient, private route: Router) { }
+  constructor(private http: HttpClient, private route: Router) {}
 
-  register(firstname: string, lastname: string, email: string, password: string) {
-    let sub = this.http.post(`${this.serverUrl}${environment.publicServerUri}/register`, {firstname, lastname, email, password});
+  register(
+    firstname: string,
+    lastname: string,
+    email: string,
+    password: string
+  ) {
+    let sub = this.http.post(
+      `${this.serverUrl}${environment.publicServerUri}/register`,
+      { firstname, lastname, email, password }
+    );
     return sub;
   }
 
   authenticate(email: string, password: string) {
-    let sub = this.http.post(`${this.serverUrl}${environment.publicServerUri}/authenticate`, {email, password}).pipe(
-      map((response: any) => {
-        localStorage.setItem("userEmail",email);
-        this.setSession(response);
-        return response;
+    let sub = this.http
+      .post(`${this.serverUrl}${environment.publicServerUri}/authenticate`, {
+        email,
+        password,
       })
-    );
+      .pipe(
+        map((response: any) => {
+          localStorage.setItem('userEmail', email);
+          this.setSession(response);
+          return response;
+        })
+      );
     return sub;
   }
 
@@ -46,17 +57,22 @@ export class AuthService {
   //metodo che lato client setta un timeout per la sessione
   expirationCounter() {
     this.tokenSubscription.unsubscribe();
-    this.tokenSubscription = of(null).pipe(delay(this.getExpiration().toDate())).subscribe((expired) => {
-      console.log('expired!');
-      this.logout();
-    })
+    this.tokenSubscription = of(null)
+      .pipe(delay(this.getExpiration().toDate()))
+      .subscribe((expired) => {
+        console.log('expired!');
+        this.logout();
+      });
   }
 
   isLogged(): boolean {
     const expires_at = moment(localStorage.getItem('expires_at'));
     console.log('adesso ', moment());
     console.log('expires_at ', expires_at);
-    console.log('adesso è prima della scadenza ', moment().isBefore(expires_at));
+    console.log(
+      'adesso è prima della scadenza ',
+      moment().isBefore(expires_at)
+    );
 
     return moment().isBefore(expires_at);
   }
@@ -69,9 +85,14 @@ export class AuthService {
 
   //da spostare
   getAllEvents() {
-    console.log(`${this.serverUrl}${environment.plannerServerUri}/event/findAll`);
+    console.log(
+      `${this.serverUrl}${environment.plannerServerUri}/event/findAll`
+    );
     return this.http.get(`${this.serverUrl}/api/planner/event/findAll`);
   }
 
-  loggedUser = (): string | null => (localStorage.getItem("userEmail")) ? localStorage.getItem("userEmail") : "";
+  loggedUser = (): string | null =>
+    localStorage.getItem('userEmail')
+      ? localStorage.getItem('userEmail')
+      : null;
 }
