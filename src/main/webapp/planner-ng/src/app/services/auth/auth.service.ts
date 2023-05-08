@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Subscription, delay, map, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, Subscription, delay, map, of } from 'rxjs';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment.development';
+import { User } from 'src/app/models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -19,15 +20,16 @@ export class AuthService {
     lastname: string,
     email: string,
     password: string
-  ) {
+  ): Observable<any> {
     let sub = this.http.post(
       `${this.serverUrl}${environment.publicServerUri}/register`,
       { firstname, lastname, email, password }
     );
+
     return sub;
   }
 
-  authenticate(email: string, password: string) {
+  authenticate(email: string, password: string): Observable<any> {
     let sub = this.http
       .post(`${this.serverUrl}${environment.publicServerUri}/authenticate`, {
         email,
@@ -37,62 +39,73 @@ export class AuthService {
         map((response: any) => {
           localStorage.setItem('userEmail', email);
           this.setSession(response);
+          this.getUserInfo(email).subscribe({
+            next: (result) => {
+            }
+          })
           return response;
         })
       );
     return sub;
   }
 
-  private setSession(response: any) {
-    localStorage.setItem('token', response.access_token);
-    localStorage.setItem('expires_at', this.getExpiration().format());
-    this.expirationCounter();
+  getUserInfo(email: string | null): Observable<User> {
+    let sub = this.http.get<User>(
+      `${this.serverUrl}${environment.helperServerUri}/user/findByEmail/${email}`
+    );
+    return sub;
   }
 
-  getExpiration() {
-    let expires_at = moment().add(60, 'minutes');
+  refreshToken(refreshToken: string) {
+    let sub = this.http.post(
+      `${this.serverUrl}${environment.helperServerUri}/refresh-token`,
+      { refreshToken }
+    );
+    return sub;
+  }
+
+  private setSession(response: any): void {
+    localStorage.setItem('token', response.access_token);
+    localStorage.setItem('refresh_token', response.refresh_token);
+    localStorage.setItem('expires_at', this.getExpiration().format());
+    this.expirationCounter(response);
+  }
+
+  getExpiration(): any {
+    let expires_at = moment().add(20, 'minutes');
     return expires_at;
   }
 
-  //metodo che lato client setta un timeout per la sessione
-  expirationCounter() {
+  expirationCounter(response: any): void {
+    let expiration = this.getExpiration().subtract(1, 'minutes');
+
     this.tokenSubscription.unsubscribe();
     this.tokenSubscription = of(null)
-      .pipe(delay(this.getExpiration().toDate()))
+      .pipe(delay(expiration.toDate()))
       .subscribe((expired) => {
-        console.log('expired!');
-        this.logout();
+        console.log('refresh token!', response);
+        this.refreshToken(response.refresh_token).subscribe({
+          next: (result) => {
+            response = result;
+            this.setSession(response);
+          },
+        });
       });
   }
 
   isLogged(): boolean {
     const expires_at = moment(localStorage.getItem('expires_at'));
-    console.log('adesso ', moment());
-    console.log('expires_at ', expires_at);
-    console.log(
-      'adesso è prima della scadenza ',
-      moment().isBefore(expires_at)
-    );
 
-    return moment().isBefore(expires_at);
+    return (moment().isBefore(expires_at));
   }
 
-  logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('expires_at');
+  logout(): void {
+    localStorage.clear();
     this.route.navigate(['login']);
   }
-
-  //da spostare
-  getAllEvents() {
-    console.log(
-      `${this.serverUrl}${environment.plannerServerUri}/event/findAll`
-    );
-    return this.http.get(`${this.serverUrl}/api/planner/event/findAll`);
+  
+  getUserEmail(): string | null {
+    return localStorage.getItem('userEmail');
   }
 
-  loggedUser = (): string | null =>
-    localStorage.getItem('userEmail')
-      ? localStorage.getItem('userEmail')
-      : null;
 }

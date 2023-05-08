@@ -18,10 +18,10 @@ export class TokenInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
     const token = localStorage.getItem('token');
-    console.log('token from interceptor ', token);
+    //console.log('token from interceptor ', token);
 
     if (token) {
-      console.log('token case ');
+      //console.log('token case ');
       req = req.clone({
         setHeaders: { Authorization: `Bearer ${token}` },
       });

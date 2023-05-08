@@ -3,5 +3,6 @@ export const environment = {
     server: "localhost",
     port: "8080",
     publicServerUri: "/api/public",
-    plannerServerUri: "api/planner"
+    plannerServerUri: "/api/planner",
+    helperServerUri: "/api/helper"
 };
