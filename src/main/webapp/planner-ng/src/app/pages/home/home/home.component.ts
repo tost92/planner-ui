@@ -14,7 +14,7 @@ export class HomeComponent implements OnInit {
 
   constructor(private authService: AuthService, private eventService: EventService) {}
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
   }
 
   logout() {

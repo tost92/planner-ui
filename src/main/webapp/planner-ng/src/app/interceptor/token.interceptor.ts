@@ -4,7 +4,11 @@ import {
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
+<<<<<<< HEAD
   HttpErrorResponse,
+=======
+  HttpErrorResponse
+>>>>>>> 34b9560b7a976a6b617841ee0d39f66c6dc851fd
 } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { AuthService } from '../services/auth/auth.service';

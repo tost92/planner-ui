@@ -103,7 +103,7 @@ export class AuthService {
     localStorage.clear();
     this.route.navigate(['login']);
   }
-  
+
   getUserEmail(): string | null {
     return localStorage.getItem('userEmail');
   }
