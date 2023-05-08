@@ -23,4 +23,10 @@ export class AppComponent implements OnInit {
   isLogged() {
     return this.authService.isLogged();
   }
+
+  useLanguage(language: any): void {
+    this.translate.use(language);
+    //console.log(this.translate.getBrowserLang());
+    //console.log(this.translateService.instant('home.getEvents', {name: 'John'}));
+  }
 }
