@@ -18,7 +18,7 @@ export class NavbarComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.userEmail = this.authService.loggedUser();
+    this.userEmail = this.authService.isLogged();
 
   }
 
@@ -28,12 +28,12 @@ export class NavbarComponent implements OnInit, OnChanges {
   }
 
   getUser(email:string){
-    this.authService.getUserByEmail(email).subscribe(
+    this.authService.getUserInfo(email).subscribe(
       {
-        next:(response)=>{
+        next:(response: UserResponse)=>{
            this.user = response;
         },
-        error:(error)=>{
+        error:(error: any)=>{
            alert(error)
         }
       })
