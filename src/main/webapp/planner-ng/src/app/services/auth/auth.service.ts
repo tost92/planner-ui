@@ -12,7 +12,7 @@ import { User } from 'src/app/models/user.model';
 export class AuthService {
   serverUrl: string = `http://${environment.server}:${environment.port}`;
   tokenSubscription = new Subscription();
-
+  
   constructor(private http: HttpClient, private route: Router) {}
 
   register(
