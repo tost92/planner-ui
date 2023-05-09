@@ -33,17 +33,10 @@ export class RegisterComponent {
       this.authService.register(firstname, lastname, email, password).subscribe({
       next: (result) => {
         this.route.navigate(['login']);
-<<<<<<< HEAD
         //console.log(result);
-      }, 
+      },
       error: (error) => {
-        //console.log(error);        
-=======
-        console.log(result);
-      }, 
-      error: (error) => {
-        console.log(error);        
->>>>>>> 34b9560b7a976a6b617841ee0d39f66c6dc851fd
+        //console.log(error);
       }
      });
     }
